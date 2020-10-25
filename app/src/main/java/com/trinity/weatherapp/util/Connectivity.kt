@@ -18,8 +18,11 @@ class Connectivity {
      * @return
      */
     fun getNetworkInfo(context: Context): NetworkInfo? {
-        val cm =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return cm.activeNetworkInfo
+        return getConnectivityManager(context).activeNetworkInfo
     }
+
+    fun getConnectivityManager(context: Context): ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
 }

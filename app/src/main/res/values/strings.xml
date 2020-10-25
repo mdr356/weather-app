@@ -9,10 +9,10 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="temperature">Temperature</string>
-    <string name="feelslike">"Feels Like: "</string>
-    <string name="low">"Low Temperature: "</string>
-    <string name="high">"High Temperature: "</string>
+    <string name="temperature">Temperature ((degree): </string>
+    <string name="feelslike">"Feels Like (degree): "</string>
+    <string name="low">"Low Temperature (degree): "</string>
+    <string name="high">"High Temperature (degree): "</string>
     <string name="pressure">Pressure</string>
     <string name="humidity">Humidity</string>
     <string name="error_msg">Unable to connect, try again later.</string>

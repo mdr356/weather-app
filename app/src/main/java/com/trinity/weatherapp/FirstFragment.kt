@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import com.trinity.weatherapp.database.DataBaseHandler
 import com.trinity.weatherapp.model.Main
 import com.trinity.weatherapp.repository.WeatherRepository
+import com.trinity.weatherapp.util.TemperatureConverter
 import com.trinity.weatherapp.viewmodel.WeatherViewModel
 
 
@@ -59,8 +60,8 @@ class FirstFragment : Fragment() {
                 } else {
                     (context as MainActivity).checkPermissions()
                     (context as MainActivity).startLocationUpdates()
-                    btnGetLocation.visibility = View.VISIBLE
-                    mainView.visibility = View.GONE
+                    btnGetLocation.visibility = View.GONE
+                    mainView.visibility = View.VISIBLE
                     viewModel.isLoading.postValue(true)
                 }
             })
@@ -99,16 +100,17 @@ class FirstFragment : Fragment() {
                             view.findViewById<LinearLayout>(R.id.mainview).visibility = View.GONE
                             view.findViewById<TextView>(R.id.errorview).visibility = View.VISIBLE
                         } else {
-                            view.findViewById<TextView>(R.id.temp).text = it.main?.temp.toString()
-                            view.findViewById<TextView>(R.id.feelsLike).text =
-                                it.main?.feelsLike.toString()
+                            view.findViewById<TextView>(R.id.temp).text = it.main?.temp?.let { it -> TemperatureConverter().fahrenheit(it).toString()}
+                            view.findViewById<TextView>(R.id.feelsLike).text = it.main?.feelsLike?.let { it -> TemperatureConverter().fahrenheit(it).toString()}
                             view.findViewById<TextView>(R.id.pressure).text =
                                 it.main?.pressure.toString()
                             view.findViewById<TextView>(R.id.humidity).text =
                                 it.main?.humidity.toString()
+                            view.findViewById<TextView>(R.id.address).text = viewModel.tempAddress.value
                             viewModel.addToDataBase(mydb, it, viewModel.zipcode.value!!, viewModel.tempAddress.value!!)
                             mainView.visibility = View.VISIBLE
                             btnGetLocation.visibility = View.GONE
+                            loadingIndicator.visibility = View.GONE
                         }
                     })
         })
@@ -127,5 +129,6 @@ class FirstFragment : Fragment() {
             screenData.humidity.toString()
 
         viewModel.isLoading.postValue(false)
+
     }
 }

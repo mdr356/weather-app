@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
 import com.trinity.weatherapp.model.WeatherMapResponse
+import com.trinity.weatherapp.util.TemperatureConverter
 
 val DATABASENAME = "MY DATABASE"
 val TABLENAME = "weather1"
@@ -67,8 +68,9 @@ class DataBaseHandler(var context: Context) : SQLiteOpenHelper(context, DATABASE
             do {
                 val response = TempResponse()
                 //response.id = result.getString(result.getColumnIndex(COL_ID)).toInt()
-                response.temp = result.getString(result.getColumnIndex(COL_TEMP)).toDouble()
-                response.feelsLike = result.getString(result.getColumnIndex(COL_FEELS_LIKE)).toDouble()
+                response.temp = TemperatureConverter().fahrenheit(result.getString(result.getColumnIndex(COL_TEMP)).toDouble())
+
+                response.feelsLike = TemperatureConverter().fahrenheit(result.getString(result.getColumnIndex(COL_FEELS_LIKE)).toDouble())
                 response.pressure = result.getString(result.getColumnIndex(COL_PRESSURE)).toInt()
                 response.humidity = result.getString(result.getColumnIndex(COL_HUMIDITY)).toInt()
                 response.longitude = result.getString(result.getColumnIndex(COL_LONGI)).toDouble()

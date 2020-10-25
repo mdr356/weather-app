@@ -16,10 +16,6 @@ import com.trinity.weatherapp.repository.WeatherRepository
 import com.trinity.weatherapp.util.TemperatureConverter
 import com.trinity.weatherapp.viewmodel.WeatherViewModel
 
-
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class FirstFragment : Fragment() {
 
     lateinit var viewModel: WeatherViewModel

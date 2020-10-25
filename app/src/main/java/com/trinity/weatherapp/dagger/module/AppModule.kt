@@ -19,7 +19,6 @@ class ApiClientModule {
 
 }*/
 
-
 @Module
 class AppModule {
 

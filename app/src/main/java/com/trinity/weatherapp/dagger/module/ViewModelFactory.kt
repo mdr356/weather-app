@@ -35,4 +35,6 @@ abstract class ViewModelModule {
     @ViewModelKey(WeatherViewModel::class)
     internal abstract fun postWeatherViewModel(viewModel: WeatherViewModel): ViewModel
 
+    // Add more viewModel
+
 }

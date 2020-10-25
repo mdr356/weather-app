@@ -8,9 +8,19 @@
 
 
     <LinearLayout
+        android:id="@+id/mainview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/address"
+            android:layout_margin="@dimen/dimen_15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_16sp"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,44 +68,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/low"/>
-
-            <TextView
-                android:id="@+id/tempMin"
-                android:layout_margin="@dimen/dimen_15dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_margin="@dimen/dimen_15dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/high"/>
-
-            <TextView
-                android:id="@+id/tempMax"
-                android:layout_margin="@dimen/dimen_15dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_margin="@dimen/dimen_15dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:text="@string/pressure"/>
 
             <TextView
@@ -125,39 +97,41 @@
                 android:layout_gravity="center"/>
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnGetLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Get Location" />
 
     </LinearLayout>
-<!--    <TextView
-        android:id="@+id/textview_first"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_first_fragment"
-        app:layout_constraintBottom_toTopOf="@id/button_first"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/btnGetLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get Current Location"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="visible"/>
 
     <TextView
-        android:id="@+id/button_first"
+        android:id="@+id/errorview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/error_msg"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textview_first"/>
-    &lt;!&ndash;<Button
-        android:id="@+id/button_first"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/loadingIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textview_first" />&ndash;&gt;-->
+        android:visibility="gone">
+
+    </ProgressBar>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

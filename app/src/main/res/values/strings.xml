@@ -15,4 +15,5 @@
     <string name="high">"High Temperature: "</string>
     <string name="pressure">Pressure</string>
     <string name="humidity">Humidity</string>
+    <string name="error_msg">Unable to connect, try again later.</string>
 </resources>

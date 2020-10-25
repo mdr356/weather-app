@@ -1,27 +1,19 @@
 package com.trinity.weatherapp
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.trinity.weatherapp.database.DataBaseHandler
 import com.trinity.weatherapp.model.Main
-import com.trinity.weatherapp.model.WeatherMapResponse
 import com.trinity.weatherapp.repository.WeatherRepository
 import com.trinity.weatherapp.viewmodel.WeatherViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.*
-import javax.inject.Inject
 
 
 /**
@@ -45,26 +37,57 @@ class FirstFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as MainActivity).viewModel
         repository = (activity as MainActivity).repository
+        val btnGetLocation = view.findViewById<TextView>(R.id.btnGetLocation)
+        val loadingIndicator = view.findViewById<ProgressBar>(R.id.loadingIndicator)
+        val mydb = DataBaseHandler(activity as MainActivity)
+        val mainView = view.findViewById<LinearLayout>(R.id.mainview)
 
-        view.findViewById<TextView>(R.id.btnGetLocation).setOnClickListener {
-            /*val nManager: location =
-                getSystemService<Any>(Context.LOCATION_SERVICE) as LocationManager*/
+        viewModel.isLoading.observe(
+            context as MainActivity, Observer{ isLoading: Boolean ->
+                if (isLoading) loadingIndicator.visibility = (View.VISIBLE)
+                else loadingIndicator.visibility = (View.GONE)
+            })
 
-            /*if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                OnGPS()
-            } else {
-                getLocation()
-            }*/
-            (context as MainActivity).checkPermissions()
-            (context as MainActivity).startLocationUpdates()
+
+        btnGetLocation.setOnClickListener {
+            viewModel.readFromDataBase(mydb).observe(context as LifecycleOwner, Observer {
+                if (it != null) {
+                    btnGetLocation.visibility = View.GONE
+                    populateView(view,it)
+                    btnGetLocation.visibility = View.GONE
+                    mainView.visibility = View.VISIBLE
+                } else {
+                    (context as MainActivity).checkPermissions()
+                    (context as MainActivity).startLocationUpdates()
+                    btnGetLocation.visibility = View.VISIBLE
+                    mainView.visibility = View.GONE
+                    viewModel.isLoading.postValue(true)
+                }
+            })
         }
 
-        val mydb: DataBaseHandler = DataBaseHandler(activity as MainActivity)
+        viewModel.readFromDataBase(mydb).observe(context as LifecycleOwner, Observer {
+            if (it != null) {
+                btnGetLocation.visibility = View.GONE
+                populateView(view, it)
+                btnGetLocation.visibility = View.GONE
+                mainView.visibility = View.VISIBLE
+            } else {
+                btnGetLocation.visibility = View.VISIBLE
+                mainView.visibility = View.GONE
+            }
+        })
 
-        viewModel.isLoading.value = true
+
+
+        viewModel.tempAddress.observe(context as LifecycleOwner, Observer {
+            view.findViewById<TextView>(R.id.address).text = it
+        })
 
         viewModel.latLng.observe(context as LifecycleOwner, Observer {
-                    viewModel.getCurrentWeather(
+            viewModel.isLoading.postValue(true)
+
+            viewModel.getCurrentWeather(
                         (activity as MainActivity).request,
                         activity as MainActivity, repository,
                         it.latitude,
@@ -72,40 +95,37 @@ class FirstFragment : Fragment() {
                         getString(R.string.api_key)
                     ).observe(context as LifecycleOwner, Observer {
                         if (it == null) {
-                            // showErrorDialog()
+                            loadingIndicator.visibility = View.GONE
+                            view.findViewById<LinearLayout>(R.id.mainview).visibility = View.GONE
+                            view.findViewById<TextView>(R.id.errorview).visibility = View.VISIBLE
                         } else {
                             view.findViewById<TextView>(R.id.temp).text = it.main?.temp.toString()
                             view.findViewById<TextView>(R.id.feelsLike).text =
                                 it.main?.feelsLike.toString()
-                            view.findViewById<TextView>(R.id.tempMin).text =
-                                it.main?.tempMin.toString()
-                            view.findViewById<TextView>(R.id.tempMax).text =
-                                it.main?.tempMax.toString()
                             view.findViewById<TextView>(R.id.pressure).text =
                                 it.main?.pressure.toString()
                             view.findViewById<TextView>(R.id.humidity).text =
                                 it.main?.humidity.toString()
-                            /*mydb.insertData(
-                                response = it,
-                                longitude = this.viewModel.latLng.value?.longitude.toString(),
-                                latitude = this.viewModel.latLng.value?.latitude.toString()
-                            )*/
+                            viewModel.addToDataBase(mydb, it, viewModel.zipcode.value!!, viewModel.tempAddress.value!!)
+                            mainView.visibility = View.VISIBLE
+                            btnGetLocation.visibility = View.GONE
                         }
                     })
         })
     }
 
-    /*private fun showErrorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity as MainActivity);
-        builder.setMessage(R.string.deleteContact)
-            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    mydb.deleteContact(id_To_Update);
-                    Toast.makeText(getApplicationContext(), "Deleted Successfully",
-                        Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    startActivity(intent);
-                }
-            })
-    }*/
+    private fun populateView(
+        view: View,
+        screenData: DataBaseHandler.TempResponse
+    ) {
+        view.findViewById<TextView>(R.id.temp).text = screenData.temp.toString()
+        view.findViewById<TextView>(R.id.feelsLike).text =
+            screenData.feelsLike.toString()
+        view.findViewById<TextView>(R.id.pressure).text =
+            screenData.pressure.toString()
+        view.findViewById<TextView>(R.id.humidity).text =
+            screenData.humidity.toString()
+
+        viewModel.isLoading.postValue(false)
+    }
 }
